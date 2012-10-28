@@ -12,6 +12,10 @@ console.log process.cwd()
 randomInt = (min, max) -> Math.floor(Math.random() * (max - min + 1)) + min
 generateId = -> "" + new Date().getTime() + randomInt 10000000, 99999999
 
+readDocument = (path, id, callback) ->
+  filename = "#{path}/#{id}.json"
+  fs.readFile filename, "UTF-8", callback
+
 writeDocument = (path, id, data, callback) ->
   filename = "#{path}/#{id}.json"
   mkdirp path, (err) ->
@@ -46,7 +50,7 @@ app.get '/:collection/:id', (req, res) ->
   collection = req.params.collection
   id = req.params.id
   readDocument collection, id, (err, data) ->
-    res.send if err then err: err else err: null, data: data
+    res.send if err then err: err else err: null, data: JSON.parse data
 
 app.put '/:collection/_view/:view', (req, res) ->
   collection = req.params.collection
